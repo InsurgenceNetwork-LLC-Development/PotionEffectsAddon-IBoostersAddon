@@ -1,0 +1,11 @@
+Effects:
+  - Type: Strength
+    Effect: INCREASE_DAMAGE
+    Amplifier: 2
+    Disabled_Worlds:
+      - example
+  - Type: Haste
+    Effect: FAST_DIGGING
+    Amplifier: 3
+    Disabled_Worlds:
+      - example2
