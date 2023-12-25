@@ -42,7 +42,7 @@ public class Effect implements ConfigSerializable {
         return type != null && player.hasPotionEffect(type);
     }
 
-    public void apply(Player player) {
+    public void applyTo(Player player) {
         PotionEffectType type = PotionEffectType.getByName(namespace);
         if (type != null) {
             player.addPotionEffect(type.createEffect(Integer.MAX_VALUE, amplifier - 1));
@@ -50,7 +50,7 @@ public class Effect implements ConfigSerializable {
         }
     }
 
-    public void remove(Player player) {
+    public void removeFrom(Player player) {
         PotionEffectType type = PotionEffectType.getByName(namespace);
         if (type != null) {
             player.removePotionEffect(type);

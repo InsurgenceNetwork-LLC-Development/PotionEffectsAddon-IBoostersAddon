@@ -30,8 +30,8 @@ public class CacheUtil {
 
     private void performAction(Effect effect, Player player, String action) {
         switch (action) {
-            case "apply" -> Common.runLater(1, () -> effect.apply(player));
-            case "remove" -> Common.runLater(1, () -> effect.remove(player));
+            case "apply" -> Common.runLater(1, () -> effect.applyTo(player));
+            case "remove" -> Common.runLater(1, () -> effect.removeFrom(player));
         }
     }
 

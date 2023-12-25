@@ -1,6 +1,5 @@
 package com.insurgencedev.potioneffectsaddon.listeners;
 
-import com.insurgencedev.potioneffectsaddon.PotionEffectsAddon;
 import com.insurgencedev.potioneffectsaddon.model.Effect;
 import com.insurgencedev.potioneffectsaddon.model.EffectManager;
 import com.insurgencedev.potioneffectsaddon.utils.CacheUtil;
@@ -9,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
 import org.insurgencedev.insurgenceboosters.api.IBoosterAPI;
 import org.insurgencedev.insurgenceboosters.events.IBoosterEndEvent;
 import org.insurgencedev.insurgenceboosters.events.IBoosterStartEvent;
@@ -29,9 +27,7 @@ public final class BoosterListener implements Listener {
     private void onStart(IBoosterStartEvent event) {
         String type = event.getBoosterData().getType();
 
-        if (PotionEffectsAddon.instance().getManager().exist(type) &&
-                event.getBoosterData().getNamespace().equals(EffectManager.BOOSTER_NAMESPACE)) {
-
+        if (manager.exist(type) && event.getBoosterData().getNamespace().equals(EffectManager.BOOSTER_NAMESPACE)) {
             Effect effect = manager.getEffect(type);
             Player player = event.getPlayer();
 
@@ -45,24 +41,21 @@ public final class BoosterListener implements Listener {
                 return;
             }
 
-            Common.runLater(1, () -> effect.apply(player));
+            Common.runLater(1, () -> effect.applyTo(player));
         }
-
     }
 
     @EventHandler
     private void onEnd(IBoosterEndEvent event) {
         String type = event.getBoosterData().getType();
         if (manager.exist(type) && event.getBoosterData().getNamespace().equals(EffectManager.BOOSTER_NAMESPACE)) {
-            manager.getEffect(type).remove(event.getPlayer());
+            manager.getEffect(type).removeFrom(event.getPlayer());
         }
     }
 
     @EventHandler
     private void onConsume(PlayerItemConsumeEvent event) {
-        ItemStack itemStack = event.getItem();
-
-        if (CompMaterial.fromItem(itemStack).equals(CompMaterial.MILK_BUCKET)) {
+        if (CompMaterial.fromItem(event.getItem()).equals(CompMaterial.MILK_BUCKET)) {
             CacheUtil.actIfBoostersFound(event.getPlayer(), "apply");
         }
     }
@@ -79,12 +72,12 @@ public final class BoosterListener implements Listener {
             GlobalBoosterManager.BoosterFindResult gResult = IBoosterAPI.getGlobalBoosterManager().findBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
 
             if (gResult instanceof GlobalBoosterManager.BoosterFindResult.Success && !effect.getActiveList().contains(player.getUniqueId())) {
-                Common.runLater(1, () -> effect.apply(player));
+                Common.runLater(1, () -> effect.applyTo(player));
                 return;
             }
 
             if (gResult instanceof GlobalBoosterManager.BoosterFindResult.NotFound && effect.getActiveList().contains(player.getUniqueId())) {
-                Common.runLater(1, () -> effect.remove(player));
+                Common.runLater(1, () -> effect.removeFrom(player));
             }
         });
     }
