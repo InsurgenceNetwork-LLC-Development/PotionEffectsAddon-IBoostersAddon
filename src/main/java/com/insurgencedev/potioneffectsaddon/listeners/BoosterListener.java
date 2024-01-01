@@ -41,6 +41,7 @@ public final class BoosterListener implements Listener {
                 return;
             }
 
+            effect.setAmplifier((int) event.getBoosterData().getMultiplier());
             Common.runLater(1, () -> effect.applyTo(player));
         }
     }

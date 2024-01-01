@@ -1,6 +1,7 @@
 package com.insurgencedev.potioneffectsaddon.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.insurgencedev.insurgenceboosters.libs.fo.collection.SerializedMap;
@@ -13,14 +14,14 @@ import java.util.UUID;
 @Getter
 public class Effect implements ConfigSerializable {
 
-    private final int amplifier;
+    @Setter
+    private int amplifier;
     private final String type;
     private final String namespace;
     private final List<UUID> activeList;
     private final List<String> disabledWorlds;
 
-    public Effect(int amplifier, String type, String namespace, List<String> disabledWorlds) {
-        this.amplifier = amplifier;
+    public Effect(String type, String namespace, List<String> disabledWorlds) {
         this.type = type;
         this.namespace = namespace;
         this.activeList = new ArrayList<>();
@@ -60,7 +61,6 @@ public class Effect implements ConfigSerializable {
 
     public static Effect deserialize(SerializedMap map) {
         return new Effect(
-                map.getInteger("Amplifier"),
                 map.getString("Type"),
                 map.getString("Effect").toUpperCase(),
                 map.getStringList("Disabled_Worlds")
