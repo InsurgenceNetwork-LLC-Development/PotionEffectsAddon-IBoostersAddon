@@ -16,11 +16,11 @@ public class PotionEffectsAddon extends InsurgenceBoostersAddon {
     @Override
     public void onAddonStart() {
         instance = this;
-        manager = new EffectManager();
     }
 
     @Override
     public void onAddonReloadablesStart() {
+        manager = new EffectManager();
         registerEvent(new BoosterListener(manager));
     }
 
