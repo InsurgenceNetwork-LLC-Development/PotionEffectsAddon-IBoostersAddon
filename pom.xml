@@ -6,7 +6,7 @@
 
     <groupId>org.insurgencedev</groupId>
     <artifactId>PotionEffectsAddon</artifactId>
-    <version>1.0.0</version>
+Ver    <version>1.0.1</version>
 
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
