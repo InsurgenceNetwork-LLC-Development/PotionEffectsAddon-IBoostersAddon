@@ -1,5 +1,6 @@
 package com.insurgencedev.potioneffectsaddon.listeners;
 
+import com.insurgencedev.potioneffectsaddon.PotionEffectsAddon;
 import com.insurgencedev.potioneffectsaddon.model.Effect;
 import com.insurgencedev.potioneffectsaddon.model.EffectManager;
 import com.insurgencedev.potioneffectsaddon.utils.CacheUtil;
@@ -14,6 +15,7 @@ import org.insurgencedev.insurgenceboosters.events.IBoosterStartEvent;
 import org.insurgencedev.insurgenceboosters.libs.fo.Common;
 import org.insurgencedev.insurgenceboosters.libs.fo.remain.CompMaterial;
 import org.insurgencedev.insurgenceboosters.models.booster.GlobalBoosterManager;
+import org.insurgencedev.insurgenceboosters.settings.IBoostersPlayerCache;
 
 public final class BoosterListener implements Listener {
 
@@ -73,12 +75,16 @@ public final class BoosterListener implements Listener {
             GlobalBoosterManager.BoosterFindResult gResult = IBoosterAPI.getGlobalBoosterManager().findBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
 
             if (gResult instanceof GlobalBoosterManager.BoosterFindResult.Success && !effect.getActiveList().contains(player.getUniqueId())) {
-                Common.runLater(1, () -> effect.applyTo(player));
-                return;
+                if (!effect.getDisabledWorlds().contains(player.getWorld().getName())) {
+                    Common.runLater(1, () -> effect.applyTo(player));
+                    return;
+                }
             }
 
             if (gResult instanceof GlobalBoosterManager.BoosterFindResult.NotFound && effect.getActiveList().contains(player.getUniqueId())) {
-                Common.runLater(1, () -> effect.removeFrom(player));
+                if (!effect.getDisabledWorlds().contains(player.getWorld().getName())) {
+                    Common.runLater(1, () -> effect.applyTo(player));
+                }
             }
         });
     }
@@ -91,5 +97,35 @@ public final class BoosterListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     private void onKick(PlayerKickEvent event) {
         CacheUtil.actIfBoostersFound(event.getPlayer(), "remove");
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    private void onChance(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+
+        PotionEffectsAddon.instance().getManager().getEffectCache().values().forEach(effect -> {
+            GlobalBoosterManager.BoosterFindResult gResult = IBoosterAPI.getGlobalBoosterManager().findBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
+            if (gResult instanceof GlobalBoosterManager.BoosterFindResult.Success) {
+                if (effect.getDisabledWorlds().contains(player.getWorld().getName())) {
+                    Common.runLater(1, () -> effect.removeFrom(player));
+                } else {
+                    if (!effect.isOnPlayer(player)) {
+                        Common.runLater(1, () -> effect.applyTo(player));
+                    }
+                }
+                return;
+            }
+
+            IBoostersPlayerCache.BoosterFindResult pResult = IBoosterAPI.getCache(player).findActiveBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
+            if (pResult instanceof IBoostersPlayerCache.BoosterFindResult.Success) {
+                if (effect.getDisabledWorlds().contains(player.getWorld().getName())) {
+                    Common.runLater(1, () -> effect.removeFrom(player));
+                } else {
+                    if (!effect.isOnPlayer(player)) {
+                        Common.runLater(1, () -> effect.applyTo(player));
+                    }
+                }
+            }
+        });
     }
 }

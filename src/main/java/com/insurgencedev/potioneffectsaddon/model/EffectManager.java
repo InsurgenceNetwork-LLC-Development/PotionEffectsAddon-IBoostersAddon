@@ -14,7 +14,7 @@ public final class EffectManager extends AddonConfig {
 
     public EffectManager() {
         effectCache = new HashMap<>();
-        loadAddonConfig("config.yml", "effects.yml");
+        loadAddonConfig("config.yml", "config.yml");
     }
 
     @Override
