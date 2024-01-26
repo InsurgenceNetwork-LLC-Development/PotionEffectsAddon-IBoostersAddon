@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="716a700c-8d16-43c5-8c97-0b650e8b9454" name="Changes" comment="mistake correction">
+    <list default="true" id="716a700c-8d16-43c5-8c97-0b650e8b9454" name="Changes" comment="minor changes, improved disabled worlds checks">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/insurgencedev/potioneffectsaddon/listeners/BoosterListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/insurgencedev/potioneffectsaddon/listeners/BoosterListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/insurgencedev/potioneffectsaddon/model/EffectManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/insurgencedev/potioneffectsaddon/model/EffectManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/insurgencedev/potioneffectsaddon/PotionEffectsAddon.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/insurgencedev/potioneffectsaddon/PotionEffectsAddon.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +138,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704104793498</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="minor changes, improved disabled worlds checks">
+      <option name="closed" value="true" />
+      <created>1704648274989</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1704648274989</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -149,6 +156,7 @@
     <MESSAGE value="updated reload logic" />
     <MESSAGE value="effect amplifier is now determined by the booster multi" />
     <MESSAGE value="mistake correction" />
-    <option name="LAST_COMMIT_MESSAGE" value="mistake correction" />
+    <MESSAGE value="minor changes, improved disabled worlds checks" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor changes, improved disabled worlds checks" />
   </component>
 </project>
