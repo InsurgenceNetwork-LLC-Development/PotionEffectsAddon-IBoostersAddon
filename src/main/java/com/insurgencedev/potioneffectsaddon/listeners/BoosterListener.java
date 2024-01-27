@@ -10,12 +10,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.insurgencedev.insurgenceboosters.api.IBoosterAPI;
+import org.insurgencedev.insurgenceboosters.data.BoosterFindResult;
 import org.insurgencedev.insurgenceboosters.events.IBoosterEndEvent;
 import org.insurgencedev.insurgenceboosters.events.IBoosterStartEvent;
 import org.insurgencedev.insurgenceboosters.libs.fo.Common;
 import org.insurgencedev.insurgenceboosters.libs.fo.remain.CompMaterial;
-import org.insurgencedev.insurgenceboosters.models.booster.GlobalBoosterManager;
-import org.insurgencedev.insurgenceboosters.settings.IBoostersPlayerCache;
 
 public final class BoosterListener implements Listener {
 
@@ -72,20 +71,17 @@ public final class BoosterListener implements Listener {
     private void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         manager.getEffectCache().values().forEach(effect -> {
-            GlobalBoosterManager.BoosterFindResult gResult = IBoosterAPI.getGlobalBoosterManager().findBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
-
-            if (gResult instanceof GlobalBoosterManager.BoosterFindResult.Success && !effect.getActiveList().contains(player.getUniqueId())) {
-                if (!effect.getDisabledWorlds().contains(player.getWorld().getName())) {
-                    Common.runLater(1, () -> effect.applyTo(player));
-                    return;
-                }
-            }
-
-            if (gResult instanceof GlobalBoosterManager.BoosterFindResult.NotFound && effect.getActiveList().contains(player.getUniqueId())) {
-                if (!effect.getDisabledWorlds().contains(player.getWorld().getName())) {
+            IBoosterAPI.INSTANCE.getGlobalBoosterManager().findGlobalBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE, globalBooster -> {
+                if (!effect.getActiveList().contains(player.getUniqueId())) {
                     Common.runLater(1, () -> effect.applyTo(player));
                 }
-            }
+                return null;
+            }, () -> {
+                if (effect.getActiveList().contains(player.getUniqueId())) {
+                    Common.runLater(1, () -> effect.applyTo(player));
+                }
+                return null;
+            });
         });
     }
 
@@ -104,20 +100,24 @@ public final class BoosterListener implements Listener {
         Player player = event.getPlayer();
 
         PotionEffectsAddon.instance().getManager().getEffectCache().values().forEach(effect -> {
-            GlobalBoosterManager.BoosterFindResult gResult = IBoosterAPI.getGlobalBoosterManager().findBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
-            if (gResult instanceof GlobalBoosterManager.BoosterFindResult.Success) {
-                if (effect.getDisabledWorlds().contains(player.getWorld().getName())) {
+            IBoosterAPI.INSTANCE.getGlobalBoosterManager().findGlobalBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE, globalBooster -> {
+                if (effect.getActiveList().contains(player.getUniqueId())) {
                     Common.runLater(1, () -> effect.removeFrom(player));
                 } else {
                     if (!effect.isOnPlayer(player)) {
                         Common.runLater(1, () -> effect.applyTo(player));
                     }
                 }
-                return;
-            }
+                return null;
+            }, () -> {
+                if (effect.getActiveList().contains(player.getUniqueId())) {
+                    Common.runLater(1, () -> effect.applyTo(player));
+                }
+                return null;
+            });
 
-            IBoostersPlayerCache.BoosterFindResult pResult = IBoosterAPI.getCache(player).findActiveBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
-            if (pResult instanceof IBoostersPlayerCache.BoosterFindResult.Success) {
+            BoosterFindResult pResult = IBoosterAPI.INSTANCE.getCache(player).getBoosterDataManager().findActiveBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
+            if (pResult instanceof BoosterFindResult.Success) {
                 if (effect.getDisabledWorlds().contains(player.getWorld().getName())) {
                     Common.runLater(1, () -> effect.removeFrom(player));
                 } else {

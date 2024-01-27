@@ -6,25 +6,26 @@ import com.insurgencedev.potioneffectsaddon.model.EffectManager;
 import lombok.experimental.UtilityClass;
 import org.bukkit.entity.Player;
 import org.insurgencedev.insurgenceboosters.api.IBoosterAPI;
+import org.insurgencedev.insurgenceboosters.data.BoosterFindResult;
 import org.insurgencedev.insurgenceboosters.libs.fo.Common;
-import org.insurgencedev.insurgenceboosters.models.booster.GlobalBoosterManager;
-import org.insurgencedev.insurgenceboosters.settings.IBoostersPlayerCache;
 
 @UtilityClass
 public class CacheUtil {
 
     public void actIfBoostersFound(Player player, String action) {
         PotionEffectsAddon.instance().getManager().getEffectCache().values().forEach(effect -> {
-            GlobalBoosterManager.BoosterFindResult gResult = IBoosterAPI.getGlobalBoosterManager().findBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
-            if (gResult instanceof GlobalBoosterManager.BoosterFindResult.Success) {
+            BoosterFindResult pResult = IBoosterAPI.INSTANCE.getCache(player).getBoosterDataManager()
+                    .findActiveBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
+
+            if (pResult instanceof BoosterFindResult.Success) {
                 performAction(effect, player, action);
                 return;
             }
 
-            IBoostersPlayerCache.BoosterFindResult pResult = IBoosterAPI.getCache(player).findActiveBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE);
-            if (pResult instanceof IBoostersPlayerCache.BoosterFindResult.Success) {
+            IBoosterAPI.INSTANCE.getGlobalBoosterManager().findGlobalBooster(effect.getType(), EffectManager.BOOSTER_NAMESPACE, globalBooster -> {
                 performAction(effect, player, action);
-            }
+                return null;
+            }, () -> null);
         });
     }
 
