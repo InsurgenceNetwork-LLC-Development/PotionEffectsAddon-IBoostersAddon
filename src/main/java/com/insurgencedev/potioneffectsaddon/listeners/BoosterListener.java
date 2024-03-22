@@ -96,7 +96,7 @@ public final class BoosterListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    private void onChance(PlayerChangedWorldEvent event) {
+    private void onChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
 
         PotionEffectsAddon.instance().getManager().getEffectCache().values().forEach(effect -> {
